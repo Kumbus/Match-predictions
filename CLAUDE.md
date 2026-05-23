@@ -1,3 +1,9 @@
+# Project guidelines
+
+@AGENTS.md
+
+---
+
 <!-- BEGIN @przeprogramowani/10x-cli -->
 
 ## 10xDevs AI Toolkit — Module 1, Lesson 4
