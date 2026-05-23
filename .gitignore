@@ -14,7 +14,7 @@
 .claude/.10x-cli-manifest.json
 
 .cr/personal
-server/.cr/personal
+src/server/.cr/personal
 # .NET
 [Bb]in/
 [Oo]bj/
