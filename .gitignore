@@ -19,6 +19,7 @@ src/server/.cr/personal
 [Bb]in/
 [Oo]bj/
 [Pp]ublish/
+publish.zip
 *.user
 .vs/
 
