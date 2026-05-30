@@ -365,27 +365,27 @@ Migrations are **forward-only** (infra-v2). Local dev auto-applies in Developmen
 
 #### Automated
 
-- [x] 1.1 Solution builds: `dotnet build src/server/prediction-league.slnx`
-- [x] 1.2 All four projects resolve in the solution
-- [x] 1.3 No stray references to `PredictionLeague.Models` remain
+- [x] 1.1 Solution builds: `dotnet build src/server/prediction-league.slnx` — f116727
+- [x] 1.2 All four projects resolve in the solution — f116727
+- [x] 1.3 No stray references to `PredictionLeague.Models` remain — f116727
 
 #### Manual
 
-- [x] 1.4 Project dependency directions are correct
-- [x] 1.5 Dev URL still `http://localhost:5185` and `PredictionLeague.http` resolves
+- [x] 1.4 Project dependency directions are correct — f116727
+- [x] 1.5 Dev URL still `http://localhost:5185` and `PredictionLeague.http` resolves — f116727
 
 ### Phase 2: EF Core + Identity DbContext
 
 #### Automated
 
-- [ ] 2.1 Solution builds
+- [x] 2.1 Solution builds
 - [ ] 2.2 `AppDbContext` model validates at design time (deferred to Phase 4 — needs EF.Design tooling)
 
 #### Manual
 
-- [ ] 2.3 `AppDbContext` uses `IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>`
-- [ ] 2.4 No `Prediction` DbSet present
-- [ ] 2.5 Domain entities carry no EF attributes
+- [x] 2.3 `AppDbContext` uses `IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>`
+- [x] 2.4 No `Prediction` DbSet present
+- [x] 2.5 Domain entities carry no EF attributes
 
 ### Phase 3: Repository abstraction + DI
 
