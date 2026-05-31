@@ -11,8 +11,16 @@
 .claude/skills/10x-rule-review/
 .claude/skills/10x-lesson/
 .claude/skills/10x-agents-md/
+.claude/skills/10x-infra-research
 .claude/.10x-cli-manifest.json
-
+.claude/skills/10x-roadmap/
+.claude/skills/10x-new/
+.claude/skills/10x-plan/
+.claude/skills/10x-plan-review/
+.claude/skills/10x-implement/
+.claude/skills/10x-archive/
+.claude/skills/10x-impl-review/
+.claude/prompts/skill-explainer.md
 .cr/personal
 src/server/.cr/personal
 # .NET
@@ -23,6 +31,15 @@ publish.zip
 *.user
 .vs/
 
+# Local secrets (docker-compose reads .env; keep real values out of git)
+.env
+!.env.example
+
 # Node (client/ also carries its own .gitignore from Vite)
 node_modules/
 dist/
+.claude/skills/10x-infra-research/SKILL.md
+.claude/prompts/m1l5-1-plan-integration.md
+.claude/prompts/m1l5-3-extend-prerequisites.md
+.claude/prompts/m1l5-2-constrain-approach.md
+.claude/prompts/m1l5-4-store-plan.md
