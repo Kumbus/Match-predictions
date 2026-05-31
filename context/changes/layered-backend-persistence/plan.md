@@ -416,13 +416,13 @@ Migrations are **forward-only** (infra-v2). Local dev auto-applies in Developmen
 
 #### Automated
 
-- [x] 5.1 Solution builds
-- [x] 5.2 Migration exists (`dotnet ef migrations list` shows `InitialCreate`)
-- [x] 5.3 Migration applies cleanly to Docker SQL (`dotnet ef database update`)
-- [x] 5.4 No references to `LeaguesController` / `CreateLeagueRequest` remain
+- [x] 5.1 Solution builds — 250e011
+- [x] 5.2 Migration exists (`dotnet ef migrations list` shows `InitialCreate`) — 250e011
+- [x] 5.3 Migration applies cleanly to Docker SQL (`dotnet ef database update`) — 250e011
+- [x] 5.4 No references to `LeaguesController` / `CreateLeagueRequest` remain — 250e011
 
 #### Manual
 
-- [x] 5.5 `dotnet run` auto-applies migration; `GET /health/db` returns `Healthy`
-- [x] 5.6 DB has domain + `AspNet*` tables, no `Predictions` table
-- [x] 5.7 Re-running `dotnet run` is idempotent
+- [x] 5.5 `dotnet run` auto-applies migration; `GET /health/db` returns `Healthy` — 250e011
+- [x] 5.6 DB has domain + `AspNet*` tables, no `Predictions` table — 250e011
+- [x] 5.7 Re-running `dotnet run` is idempotent — 250e011
