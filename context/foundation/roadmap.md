@@ -3,7 +3,7 @@ project: "Football Match Prediction App"
 version: 1
 status: draft
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-05-31
 prd_version: 1
 main_goal: speed
 top_blocker: external
@@ -32,7 +32,8 @@ Free football prediction games today only run on official organizer sites for th
 | F-01  | layered-backend-persistence | (foundation) layered backend (Domain/Application/Infrastructure) + EF Core persistence in place | —                  | FR-002, NFR-freshness     | ready    |
 | F-02  | auth-oauth-scaffold        | (foundation) OAuth sign-in scaffold + identity issuing/verification wired    | —                  | FR-001, Access Control    | ready    |
 | F-03  | football-api-ingest        | (foundation) football data API client + scheduled ingest of fixtures/results | F-01               | FR-004, FR-005            | blocked  |
-| S-01  | user-sign-in               | sign in via OAuth and land in the authenticated app                          | F-02               | FR-001, US-01             | proposed |
+| F-04  | walking-skeleton-deploy     | (foundation) app + Azure SQL deployed end-to-end; first prod migration applied (human-gated) | F-01, F-02         | NFR-freshness, infra-v2   | proposed |
+| S-01  | user-sign-in               | sign in via OAuth and land in the authenticated app                          | F-02, F-04         | FR-001, US-01             | proposed |
 | S-02  | admin-seed-tournament      | (admin) add a tournament and have its fixtures + per-match detail ingested   | F-01, F-03         | FR-003, FR-004, FR-005    | blocked  |
 | S-03  | organizer-create-league    | create a league tied to a seeded tournament                                  | S-01, S-02         | FR-006, US-01             | proposed |
 | S-04  | custom-scoring-rules       | define custom scoring rules for a league                                     | S-03               | FR-008, US-01             | proposed |
@@ -47,7 +48,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 | Stream | Theme                  | Chain                                                          | Note                                                                 |
 | ------ | ---------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------- |
 | A      | League & scoring loop  | `F-01` → `S-02` → `S-03` → (`S-04` / `S-05`) → `S-06` → `S-07` | The critical path to the north star; biased first under `speed`.     |
-| B      | Identity / sign-in     | `F-02` → `S-01`                                               | `S-01` joins Stream A at `S-03` (organizer must be signed in).       |
+| B      | Identity / sign-in     | `F-02` → `F-04` → `S-01`                                      | `F-04` also needs `F-01` (DB to deploy). `S-01` joins Stream A at `S-03` (organizer must be signed in). |
 | C      | Match data ingest      | `F-03`                                                       | External-API-blocked; joins Stream A at `S-02` and feeds `S-07`.     |
 
 ## Baseline
@@ -105,6 +106,19 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** The #1 roadmap blocker. Until the source is chosen, ingest cannot be built and granular scoring (FR-005) viability is unknown. Resolving this is the single highest-leverage move — it unblocks F-03, S-02, and transitively the north star.
 - **Status:** blocked
 
+### F-04: Walking-skeleton Azure deploy
+
+- **Outcome:** (foundation) the layered API + Azure SQL are provisioned and deployed end-to-end, the prod connection string is injected as an App Service app setting, and the F-01 initial migration is applied to Azure SQL by hand (forward-only, human-gated). A thin liveness path (e.g. `/health/db` reaching prod Azure SQL) proves the deployed shape before any user-facing slice ships.
+- **Change ID:** walking-skeleton-deploy
+- **PRD refs:** NFR (freshness — persisted standings in the live environment), `infrastructure-v2.md`
+- **Unlocks:** S-01 (needs a running deployed environment to confirm the OAuth round-trip and session in the deployed shape); de-risks every later slice by making prod real early.
+- **Prerequisites:** F-01 (schema + migration to apply), F-02 (auth wired so S-01 can exercise it against the deploy)
+- **Parallel with:** F-03
+- **Blockers:** —
+- **Unknowns:** —
+- **Risk:** Closes the roadmap gap where S-01 assumed a "deployed shape" that nothing provisioned. Keep it thin — App Service F1 + Azure SQL Basic + manual GitHub Actions promotion per infra-v2; no observability investment (`main_goal: speed`). Prod migrations stay forward-only + human-gated; never auto-migrate prod.
+- **Status:** proposed
+
 ## Slices
 
 ### S-01: User can sign in
@@ -112,11 +126,11 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Outcome:** user can sign in via OAuth and land in the authenticated app.
 - **Change ID:** user-sign-in
 - **PRD refs:** FR-001, US-01
-- **Prerequisites:** F-02
+- **Prerequisites:** F-02, F-04
 - **Parallel with:** S-02
 - **Blockers:** —
 - **Unknowns:** —
-- **Risk:** Thin slice exercising F-02 end-to-end. Low risk; mainly confirms the OAuth round-trip and session work in the deployed shape.
+- **Risk:** Thin slice exercising F-02 end-to-end. Low risk; mainly confirms the OAuth round-trip and session work in the deployed shape — which F-04 now provisions.
 - **Status:** proposed
 
 ### S-02: Admin seeds a tournament with match data
@@ -202,7 +216,8 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | F-01       | layered-backend-persistence | Rebuild backend into layered solution + EF Core persistence | yes               | Run `/10x-plan layered-backend-persistence` |
 | F-02       | auth-oauth-scaffold         | Scaffold OAuth sign-in (ASP.NET Core Identity)          | yes                   | Run `/10x-plan auth-oauth-scaffold` |
 | F-03       | football-api-ingest         | Football data API client + scheduled ingest             | no                    | Blocked on API selection (OQ #1) |
-| S-01       | user-sign-in                | User can sign in via OAuth                               | no                    | Needs F-02 |
+| F-04       | walking-skeleton-deploy     | Walking-skeleton Azure deploy (App Service + Azure SQL)  | no                    | Needs F-01, F-02; run `/10x-new walking-skeleton-deploy` then `/10x-plan` |
+| S-01       | user-sign-in                | User can sign in via OAuth                               | no                    | Needs F-02, F-04 |
 | S-02       | admin-seed-tournament       | Admin seeds tournament + match data ingest              | no                    | Blocked on API selection + fallback decision |
 | S-03       | organizer-create-league     | Organizer creates a league                              | no                    | Needs S-01, S-02 |
 | S-04       | custom-scoring-rules        | Organizer defines custom scoring rules                  | no                    | Needs S-03; carries scoring-validation unknown |
